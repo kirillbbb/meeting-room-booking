@@ -2,7 +2,7 @@
   "name": "meeting-room-booking",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@11.19.0",
+  "packageManager": "pnpm@10.34.5",
   "scripts": {
     "dev": "concurrently -k -n API,WEB -c yellow,cyan \"pnpm --dir server dev\" \"pnpm --dir client dev\"",
     "start": "cross-env VITE_API_URL=/api/v1 VITE_WS_URL= pnpm build && concurrently -k -s first -n API,WEB -c yellow,cyan \"pnpm start:api\" \"pnpm start:web\"",
