@@ -53,12 +53,18 @@ WebSocket.
 
 ## Запуск
 
-Понадобятся Node.js 20+ и pnpm 11+.
+Понадобятся Node.js 20+ и pnpm 11+. Склонируйте репозиторий и запустите проект
+из его корневой директории:
 
 ```bash
+git clone https://github.com/talense-tasks/frontend-trainee-assignment-autumn-2026-flow-2-kirillbbb-c8615c20.git
+cd frontend-trainee-assignment-autumn-2026-flow-2-kirillbbb-c8615c20
 pnpm install
 pnpm dev
 ```
+
+Если репозиторий уже скачан и зависимости установлены, для следующих запусков
+достаточно выполнить `pnpm dev` в корне проекта.
 
 После запуска доступны:
 
