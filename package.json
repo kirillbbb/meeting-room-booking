@@ -5,6 +5,9 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "dev": "concurrently -k -n API,WEB -c yellow,cyan \"pnpm --dir server dev\" \"pnpm --dir client dev\"",
+    "start": "cross-env VITE_API_URL=/api/v1 VITE_WS_URL= pnpm build && concurrently -k -s first -n API,WEB -c yellow,cyan \"pnpm start:api\" \"pnpm start:web\"",
+    "start:api": "cross-env NODE_ENV=production HOST=127.0.0.1 PORT=3100 ENABLE_TEST_RESET=false CORS_ORIGINS=http://localhost:4173,http://127.0.0.1:4173 pnpm --dir server start",
+    "start:web": "pnpm --dir client preview --host 127.0.0.1 --port 4173 --strictPort",
     "build": "pnpm --dir server build && pnpm --dir client build",
     "test": "pnpm --dir server test && pnpm --dir client test",
     "lint": "pnpm --dir server lint && pnpm --dir client lint",
@@ -12,7 +15,8 @@
     "check": "pnpm --dir server check && pnpm --dir client check"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0"
   },
   "engines": {
     "node": ">=20"

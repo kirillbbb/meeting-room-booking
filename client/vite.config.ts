@@ -1,13 +1,20 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react-swc';
 
+const apiProxy = (target: string) => ({
+  '/api': { target, ws: true },
+});
+
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    proxy: {
-      '/api': { target: 'http://localhost:3000', ws: true },
-    },
+    proxy: apiProxy('http://127.0.0.1:3000'),
+  },
+  preview: {
+    port: 4173,
+    strictPort: true,
+    proxy: apiProxy('http://127.0.0.1:3100'),
   },
   test: {
     include: ['src/**/*.test.{ts,tsx}'],

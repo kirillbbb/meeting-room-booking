@@ -4,8 +4,16 @@ import { loadConfig } from './config.js';
 const config = loadConfig();
 const app = await buildApp({ config, logger: true });
 
+let isShuttingDown = false;
 const shutdown = async (): Promise<void> => {
-  await app.close();
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  try {
+    await app.close();
+  } catch (error) {
+    app.log.error(error);
+    process.exitCode = 1;
+  }
 };
 
 process.once('SIGINT', () => {

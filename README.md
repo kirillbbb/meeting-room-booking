@@ -76,10 +76,23 @@ pnpm dev
 Первый экран просит выбрать офис. Это предусмотренное состояние приложения, а
 не ошибка загрузки.
 
+### Production-сборка локально
+
+Чтобы одной командой собрать и запустить обе части приложения в production-режиме:
+
+```bash
+pnpm start
+```
+
+Команда запускает собранный frontend на http://127.0.0.1:4173 и backend на
+http://127.0.0.1:3100. Swagger UI и endpoint сброса тестовых данных в этом режиме
+отключены. Для остановки обоих процессов нажмите `Ctrl+C`.
+
 ## Основные команды
 
 ```bash
 pnpm dev                         # frontend и backend
+pnpm start                       # production-сборка и локальный запуск
 pnpm check                       # форматирование, lint, типы и unit-тесты
 pnpm build                       # production-сборка
 pnpm test                        # frontend- и backend-тесты
