@@ -21,8 +21,14 @@ const testConfig: AppConfig = {
   environment: 'test',
 };
 
-export async function buildTestApp(): Promise<FastifyInstance> {
-  const app = await buildApp({ logger: false, clock: new FixedClock(), config: testConfig });
+export async function buildTestApp(
+  configOverrides: Partial<AppConfig> = {},
+): Promise<FastifyInstance> {
+  const app = await buildApp({
+    logger: false,
+    clock: new FixedClock(),
+    config: { ...testConfig, ...configOverrides },
+  });
   apps.add(app);
   return app;
 }
