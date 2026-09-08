@@ -7,6 +7,13 @@
 своими бронированиями. Данные синхронизируются между открытыми клиентами через
 WebSocket.
 
+## Демо
+
+- [Открыть BookRoom](https://meeting-room-booking-client-five.vercel.app);
+- [проверить состояние API](https://meeting-room-booking-backend-production-e0f7.up.railway.app/health).
+
+Frontend опубликован на Vercel, backend — на Railway.
+
 ## Возможности
 
 - поиск переговорных по офису, дате, времени, длительности и вместимости;
@@ -53,12 +60,10 @@ WebSocket.
 
 ## Запуск
 
-Понадобятся Node.js 20+ и pnpm 10+. Склонируйте репозиторий и запустите проект
-из его корневой директории:
+Понадобятся Node.js 20+ и pnpm 10+. Из корневой директории скачанного
+репозитория выполните:
 
 ```bash
-git clone https://github.com/kirillbbb/meeting-room-booking.git
-cd meeting-room-booking
 pnpm install
 pnpm dev
 ```
@@ -87,6 +92,24 @@ pnpm start
 Команда запускает собранный frontend на http://127.0.0.1:4173 и backend на
 http://127.0.0.1:3100. Swagger UI и endpoint сброса тестовых данных в этом режиме
 отключены. Для остановки обоих процессов нажмите `Ctrl+C`.
+
+## Публикация
+
+Vercel собирает frontend из директории `client`. Для production и preview
+нужно указать переменные `VITE_API_URL` и `VITE_WS_URL` с адресами публичного
+REST API и WebSocket endpoint.
+
+Railway собирает backend из корня репозитория со следующими настройками:
+
+```text
+Build command: pnpm --dir server build
+Start command: pnpm --dir server start
+Healthcheck Path: /health
+```
+
+Backend использует `NODE_ENV=production`, `ENABLE_TEST_RESET=false` и
+`CORS_ORIGINS` с точным production origin frontend. Переменную `PORT` задаёт
+Railway.
 
 ## Основные команды
 
