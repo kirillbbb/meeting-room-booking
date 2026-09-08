@@ -69,7 +69,8 @@ pnpm dev
 После запуска доступны:
 
 - frontend — http://localhost:5173;
-- API — http://localhost:3000;
+- REST API — http://localhost:3000/api/v1;
+- проверка состояния API — http://localhost:3000/health;
 - Swagger UI — http://localhost:3000/documentation.
 
 Первый экран просит выбрать офис. Это предусмотренное состояние приложения, а
