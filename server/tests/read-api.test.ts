@@ -82,7 +82,8 @@ describe('read-only API', () => {
     expect(schedule.json().items).toEqual([
       expect.objectContaining({
         id: 'booking-future-current-user',
-        title: 'Ежедневная встреча команды',
+        title: 'Еженедельная встреча команды',
+        seriesId: 'series-weekly-team-sync',
         owner: expect.objectContaining({ displayName: 'Константин Кузнецов' }),
       }),
     ]);
@@ -111,6 +112,8 @@ describe('read-only API', () => {
     expect(upcoming.json<{ items: { id: string }[] }>().items.map(({ id }) => id)).toEqual([
       'booking-future-current-user',
       'booking-future-current-user-2',
+      'booking-future-current-user-week-2',
+      'booking-future-current-user-week-3',
     ]);
     expect(past.statusCode).toBe(200);
     expect(past.json<{ items: { id: string }[] }>().items.map(({ id }) => id)).toEqual([

@@ -10,7 +10,10 @@ interface OpenApiOperation {
 }
 
 interface OpenApiDocument {
-  paths?: Record<string, { get?: OpenApiOperation; post?: OpenApiOperation }>;
+  paths?: Record<
+    string,
+    { get?: OpenApiOperation; post?: OpenApiOperation; delete?: OpenApiOperation }
+  >;
 }
 
 describe('OpenAPI', () => {
@@ -29,6 +32,7 @@ describe('OpenAPI', () => {
         '/api/v1/rooms/{roomId}/bookings',
         '/api/v1/bookings',
         '/api/v1/bookings/{bookingId}',
+        '/api/v1/bookings/series/{seriesId}',
         '/api/v1/test/reset',
         '/api/v1/ws',
       ]),

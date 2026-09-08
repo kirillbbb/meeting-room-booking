@@ -7,6 +7,7 @@ import { validateBookingInterval } from './booking-rules.js';
 
 export interface CreateBookingInput {
   roomId: string;
+  seriesId?: string | null;
   title: string;
   comment?: string | null;
   startsAt: Date;
@@ -84,6 +85,7 @@ export class BookingService {
 
     const booking = this.store.insertBooking({
       id: randomUUID(),
+      seriesId: input.seriesId?.trim() || null,
       roomId: room.id,
       userId: this.store.getCurrentUser().id,
       title,
@@ -116,6 +118,35 @@ export class BookingService {
       throw new AppError('BOOKING_NOT_FOUND', 404, 'Бронирование не найдено');
     }
     return this.toBookingView(deleted);
+  }
+
+  cancelBookingSeries(seriesId: string): BookingView[] {
+    const currentUserId = this.store.getCurrentUser().id;
+    const matching = this.store
+      .listBookings()
+      .filter((booking) => booking.seriesId === seriesId && booking.userId === currentUserId);
+    if (!matching.length) {
+      throw new AppError('BOOKING_SERIES_NOT_FOUND', 404, 'Серия бронирований не найдена');
+    }
+
+    const future = matching.filter(
+      (booking) => booking.startsAt.getTime() > this.clock.now().getTime(),
+    );
+    if (!future.length) {
+      throw new AppError(
+        'BOOKING_NOT_CANCELLABLE',
+        400,
+        'В серии нет будущих бронирований для отмены',
+      );
+    }
+
+    return future.map((booking) => {
+      const deleted = this.store.deleteBooking(booking.id);
+      if (!deleted) {
+        throw new AppError('BOOKING_NOT_FOUND', 404, 'Бронирование не найдено');
+      }
+      return this.toBookingView(deleted);
+    });
   }
 
   listRooms(query: ListRoomsQuery): RoomSummary[] {

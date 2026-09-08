@@ -5,7 +5,7 @@ const environmentSchema = z.object({
   PORT: z.coerce.number().int().min(1).max(65_535).default(3000),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   CORS_ORIGINS: z.string().default('http://localhost:5173'),
-  ENABLE_TEST_RESET: z.enum(['true', 'false']).default('true'),
+  ENABLE_TEST_RESET: z.enum(['true', 'false']).optional(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 });
 
@@ -20,6 +20,10 @@ export interface AppConfig {
 
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppConfig {
   const values = environmentSchema.parse(environment);
+  const enableTestReset =
+    values.ENABLE_TEST_RESET === undefined
+      ? values.NODE_ENV !== 'production'
+      : values.ENABLE_TEST_RESET === 'true';
 
   return {
     host: values.HOST,
@@ -28,7 +32,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     corsOrigins: values.CORS_ORIGINS.split(',')
       .map((origin) => origin.trim())
       .filter(Boolean),
-    enableTestReset: values.ENABLE_TEST_RESET === 'true',
+    enableTestReset,
     environment: values.NODE_ENV,
   };
 }

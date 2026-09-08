@@ -112,6 +112,7 @@ function officeTime(clock: Clock, days: number, hour: number, minute = 0): Date 
 function booking(
   clock: Clock,
   values: Pick<Booking, 'id' | 'roomId' | 'userId' | 'title' | 'comment'> & {
+    seriesId?: string;
     days: number;
     startHour: number;
     startMinute?: number;
@@ -121,6 +122,7 @@ function booking(
   const startsAt = officeTime(clock, values.days, values.startHour, values.startMinute);
   return {
     id: values.id,
+    seriesId: values.seriesId ?? null,
     roomId: values.roomId,
     userId: values.userId,
     title: values.title,
@@ -145,11 +147,34 @@ export function createSeedState(clock: Clock): AppState {
     }),
     booking(clock, {
       id: 'booking-future-current-user',
+      seriesId: 'series-weekly-team-sync',
       roomId: 'room-everest',
       userId: CURRENT_USER_ID,
-      title: 'Ежедневная встреча команды',
+      title: 'Еженедельная встреча команды',
       comment: 'Синхронизация по задачам',
       days: 1,
+      startHour: 15,
+      durationMinutes: 60,
+    }),
+    booking(clock, {
+      id: 'booking-future-current-user-week-2',
+      seriesId: 'series-weekly-team-sync',
+      roomId: 'room-everest',
+      userId: CURRENT_USER_ID,
+      title: 'Еженедельная встреча команды',
+      comment: 'Синхронизация по задачам',
+      days: 8,
+      startHour: 15,
+      durationMinutes: 60,
+    }),
+    booking(clock, {
+      id: 'booking-future-current-user-week-3',
+      seriesId: 'series-weekly-team-sync',
+      roomId: 'room-everest',
+      userId: CURRENT_USER_ID,
+      title: 'Еженедельная встреча команды',
+      comment: 'Синхронизация по задачам',
+      days: 15,
       startHour: 15,
       durationMinutes: 60,
     }),

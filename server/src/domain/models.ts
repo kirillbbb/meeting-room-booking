@@ -30,6 +30,7 @@ export interface Room {
 
 export interface Booking {
   id: string;
+  seriesId: string | null;
   roomId: string;
   userId: string;
   title: string;

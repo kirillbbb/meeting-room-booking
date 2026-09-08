@@ -7,6 +7,7 @@ import {
 } from './openapi-schemas.js';
 import {
   bookingParamsSchema,
+  bookingSeriesParamsSchema,
   bookingsQuerySchema,
   createBookingSchema,
   parseRequest,
@@ -59,6 +60,7 @@ export const bookingRoutes: FastifyPluginCallback = (app, _options, done) => {
       const body = parseRequest(createBookingSchema, request.body);
       const booking = app.bookingService.createBooking({
         roomId: body.roomId,
+        ...(body.seriesId === undefined ? {} : { seriesId: body.seriesId }),
         title: body.title,
         ...(body.comment === undefined ? {} : { comment: body.comment }),
         startsAt: new Date(body.startsAt),
@@ -73,6 +75,41 @@ export const bookingRoutes: FastifyPluginCallback = (app, _options, done) => {
         available: false,
       });
       return reply.status(201).send(booking);
+    },
+  );
+
+  app.delete(
+    '/api/v1/bookings/series/:seriesId',
+    {
+      schema: {
+        tags: ['Бронирования'],
+        summary: 'Отменить будущие бронирования серии',
+        params: {
+          type: 'object',
+          required: ['seriesId'],
+          properties: { seriesId: { type: 'string' } },
+        },
+        response: {
+          204: { type: 'null' },
+          400: errorResponseSchema,
+          404: errorResponseSchema,
+        },
+      },
+    },
+    (request, reply) => {
+      const { seriesId } = parseRequest(bookingSeriesParamsSchema, request.params);
+      const cancelled = app.bookingService.cancelBookingSeries(seriesId);
+      for (const booking of cancelled) {
+        app.webSocketHub.broadcast('booking.cancelled', { booking });
+        app.webSocketHub.broadcast('room.availability_changed', {
+          roomId: booking.roomId,
+          officeId: booking.office.id,
+          startsAt: booking.startsAt.toISOString(),
+          endsAt: booking.endsAt.toISOString(),
+          available: true,
+        });
+      }
+      return reply.status(204).send();
     },
   );
 

@@ -37,7 +37,34 @@ describe('booking mutation API', () => {
       startsAt: validPayload.startsAt,
       endsAt: validPayload.endsAt,
       owner: { id: 'user-konstantin', displayName: 'Константин Кузнецов' },
+      seriesId: null,
     });
+  });
+
+  it('creates and cancels a booking series', async () => {
+    const app = await buildTestApp();
+    const seriesId = 'series-team-sync';
+    for (const [startsAt, endsAt] of [
+      ['2026-08-19T10:00:00.000Z', '2026-08-19T11:00:00.000Z'],
+      ['2026-08-20T10:00:00.000Z', '2026-08-20T11:00:00.000Z'],
+    ]) {
+      const created = await app.inject({
+        method: 'POST',
+        url: '/api/v1/bookings',
+        payload: { ...validPayload, seriesId, startsAt, endsAt },
+      });
+      expect(created.statusCode).toBe(201);
+      expect(created.json()).toMatchObject({ seriesId });
+    }
+
+    const cancelled = await app.inject({
+      method: 'DELETE',
+      url: `/api/v1/bookings/series/${seriesId}`,
+    });
+    expect(cancelled.statusCode).toBe(204);
+    expect(app.appStore.listBookings().filter((booking) => booking.seriesId === seriesId)).toEqual(
+      [],
+    );
   });
 
   it.each([

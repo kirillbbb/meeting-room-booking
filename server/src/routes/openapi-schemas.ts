@@ -66,6 +66,7 @@ export const bookingSchema = {
   type: 'object',
   required: [
     'id',
+    'seriesId',
     'roomId',
     'userId',
     'title',
@@ -79,6 +80,7 @@ export const bookingSchema = {
   ],
   properties: {
     id: { type: 'string' },
+    seriesId: { anyOf: [{ type: 'string' }, { type: 'null' }] },
     roomId: { type: 'string' },
     userId: { type: 'string' },
     title: { type: 'string' },
@@ -109,6 +111,7 @@ export const createBookingBodySchema = {
   required: ['roomId', 'title', 'startsAt', 'endsAt'],
   properties: {
     roomId: { type: 'string', minLength: 1, maxLength: 100 },
+    seriesId: { anyOf: [{ type: 'string', minLength: 1, maxLength: 100 }, { type: 'null' }] },
     title: { type: 'string', minLength: 1, maxLength: 200 },
     comment: { anyOf: [{ type: 'string', maxLength: 2_000 }, { type: 'null' }] },
     startsAt: { type: 'string', format: 'date-time' },

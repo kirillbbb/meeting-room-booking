@@ -4,6 +4,7 @@ import { AppError } from '../domain/errors.js';
 export const idParamsSchema = z.object({ id: z.string().min(1) });
 export const roomParamsSchema = z.object({ roomId: z.string().min(1) });
 export const bookingParamsSchema = z.object({ bookingId: z.string().min(1) });
+export const bookingSeriesParamsSchema = z.object({ seriesId: z.string().min(1).max(100) });
 
 export const isoTimestampSchema = z
   .string()
@@ -39,6 +40,7 @@ export const bookingsQuerySchema = z.object({
 
 export const createBookingSchema = z.object({
   roomId: z.string().trim().min(1).max(100),
+  seriesId: z.string().trim().min(1).max(100).nullable().optional(),
   title: z.string().trim().min(1).max(200),
   comment: z.string().trim().max(2_000).nullable().optional(),
   startsAt: isoTimestampSchema,

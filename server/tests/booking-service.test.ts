@@ -72,6 +72,27 @@ describe('BookingService', () => {
     );
   });
 
+  it('cancels all future occurrences in a booking series', () => {
+    const service = createService();
+    const first = service.createBooking({ ...baseInput, seriesId: 'series-sync' });
+    const second = service.createBooking({
+      ...baseInput,
+      seriesId: 'series-sync',
+      startsAt: new Date('2026-08-20T07:00:00.000Z'),
+      endsAt: new Date('2026-08-20T08:00:00.000Z'),
+    });
+
+    expect(service.cancelBookingSeries('series-sync').map(({ id }) => id)).toEqual([
+      first.id,
+      second.id,
+    ]);
+    expect(
+      service
+        .listCurrentUserBookings({ scope: 'upcoming' })
+        .filter(({ seriesId }) => seriesId === 'series-sync'),
+    ).toEqual([]);
+  });
+
   it('filters rooms by office, capacity, and availability', () => {
     const service = createService();
     const rooms = service.listRooms({
@@ -93,6 +114,8 @@ describe('BookingService', () => {
     expect(service.listCurrentUserBookings({ scope: 'upcoming' }).map(({ id }) => id)).toEqual([
       'booking-future-current-user',
       'booking-future-current-user-2',
+      'booking-future-current-user-week-2',
+      'booking-future-current-user-week-3',
     ]);
   });
 });
